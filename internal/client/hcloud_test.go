@@ -72,10 +72,10 @@ func TestCreateInstance(t *testing.T) {
 	mockAPI := new(MockHCloudAPI)
 
 	Mocktools := params.RunnerApplicationDownload{
-		OS:           hcloud.String("linux"),
-		Architecture: hcloud.String("amd64"),
-		DownloadURL:  hcloud.String("MockURL"),
-		Filename:     hcloud.String("garm-runner"),
+		OS:           hcloud.Ptr("linux"),
+		Architecture: hcloud.Ptr("amd64"),
+		DownloadURL:  hcloud.Ptr("MockURL"),
+		Filename:     hcloud.Ptr("garm-runner"),
 	}
 	client := &HcloudClient{api: mockAPI}
 

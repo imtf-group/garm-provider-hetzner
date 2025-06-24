@@ -1,3 +1,6 @@
+vendor/
+build/
+release/
 tests
 cover.out
 coverage.html

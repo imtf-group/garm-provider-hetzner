@@ -123,7 +123,7 @@ func (c *HcloudClient) CreateInstance(ctx context.Context, spec *spec.RunnerSpec
 	result, _, err := c.api.CreateServer(ctx, hcloud.ServerCreateOpts{
 		UserData:         udata,
 		Name:             spec.BootstrapParams.Name,
-		StartAfterCreate: hcloud.Bool(true),
+		StartAfterCreate: hcloud.Ptr(true),
 		ServerType:       serverType,
 		Image:            image,
 		Location:         location,
@@ -158,7 +158,7 @@ func (c *HcloudClient) DeleteInstance(ctx context.Context, instance string) erro
 	}
 	_, err = c.api.DeleteServer(ctx, server)
 	if err != nil {
-		return fmt.Errorf("Error during deletion: %v (ID: %d)", err, server.ID)
+		return fmt.Errorf("error during deletion: %v (ID: %d)", err, server.ID)
 	}
 	return nil
 }
@@ -166,14 +166,14 @@ func (c *HcloudClient) DeleteInstance(ctx context.Context, instance string) erro
 func (c *HcloudClient) GetInstance(ctx context.Context, instance string) (*hcloud.Server, error) {
 	serverID, err := strconv.ParseInt(instance, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("Parse error: %v", err)
+		return nil, fmt.Errorf("parse error: %v", err)
 	}
 	server, _, err := c.api.GetServerByID(ctx, serverID)
 	if err != nil {
-		return nil, fmt.Errorf("Error while retrieving the serverID: %v", err)
+		return nil, fmt.Errorf("error while retrieving the serverID: %v", err)
 	}
 	if server == nil {
-		return nil, fmt.Errorf("Server with ID %d not found", serverID)
+		return nil, fmt.Errorf("server with ID %d not found", serverID)
 	}
 	return server, nil
 }
@@ -196,7 +196,7 @@ func (c *HcloudClient) StartInstance(ctx context.Context, instance string) error
 	}
 	_, _, err = c.api.StartServer(ctx, server)
 	if err != nil {
-		return fmt.Errorf("Error while starting: %v (ID: %d)", err, server.ID)
+		return fmt.Errorf("error while starting: %v (ID: %d)", err, server.ID)
 	}
 	return nil
 }
@@ -211,7 +211,7 @@ func (c *HcloudClient) StopInstance(ctx context.Context, instance string) error 
 	}
 	_, _, err = c.api.StopServer(ctx, server)
 	if err != nil {
-		return fmt.Errorf("Error while stopping: %v (ID: %d)", err, server.ID)
+		return fmt.Errorf("error while stopping: %v (ID: %d)", err, server.ID)
 	}
 	return nil
 }

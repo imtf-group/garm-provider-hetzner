@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Golang
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+
+      - name: Release files
+        shell: bash
+        run: make release
+
+      - name: upload release files
+        shell: bash
+        run: |
+          for file in release/*; do
+            gh release upload ${{ github.event.release.tag_name }} $file
+          done
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}

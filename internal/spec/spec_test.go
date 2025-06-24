@@ -24,14 +24,14 @@ func TestExtraSpecsFromBootstrapData(t *testing.T) {
 				ExtraSpecs: json.RawMessage(`{"placement_group": 444444, "firewalls": [222222, 333333], "networks": [111111], "location": "nbg1", "ssh_keys": [123456], "disable_updates": true, "enable_boot_debug": true, "extra_packages": ["package1", "package2"], "runner_install_template": "IyEvYmluL2Jhc2gKZWNobyBJbnN0YWxsaW5nIHJ1bm5lci4uLg==", "pre_install_scripts": {"setup.sh": "IyEvYmluL2Jhc2gKZWNobyBTZXR1cCBzY3JpcHQuLi4="}, "datacenter": "nbg1-dc1"}`),
 			},
 			expectedOutput: &extraSpecs{
-				Location:        hcloud.String("nbg1"),
+				Location:        hcloud.Ptr("nbg1"),
 				SSHKeys:         []int64{123456},
-				Datacenter:      hcloud.String("nbg1-dc1"),
+				Datacenter:      hcloud.Ptr("nbg1-dc1"),
 				PlacementGroup:  hcloud.Ptr(int64(444444)),
 				Networks:        []int64{111111},
 				Firewalls:       []int64{222222, 333333},
-				DisableUpdates:  hcloud.Bool(true),
-				EnableBootDebug: hcloud.Bool(true),
+				DisableUpdates:  hcloud.Ptr(true),
+				EnableBootDebug: hcloud.Ptr(true),
 				ExtraPackages:   []string{"package1", "package2"},
 				CloudConfigSpec: cloudconfig.CloudConfigSpec{
 					RunnerInstallTemplate: []byte("#!/bin/bash\necho Installing runner..."),
@@ -180,10 +180,10 @@ func TestExtraSpecsFromBootstrapData(t *testing.T) {
 
 func TestGetRunnerSpecFromBootstrapParams(t *testing.T) {
 	Mocktools := params.RunnerApplicationDownload{
-		OS:           hcloud.String("linux"),
-		Architecture: hcloud.String("amd64"),
-		DownloadURL:  hcloud.String("MockURL"),
-		Filename:     hcloud.String("garm-runner"),
+		OS:           hcloud.Ptr("linux"),
+		Architecture: hcloud.Ptr("amd64"),
+		DownloadURL:  hcloud.Ptr("MockURL"),
+		Filename:     hcloud.Ptr("garm-runner"),
 	}
 	DefaultToolFetch = func(osType params.OSType, osArch params.OSArch, tools []params.RunnerApplicationDownload) (params.RunnerApplicationDownload, error) {
 		return Mocktools, nil
@@ -265,10 +265,10 @@ func TestRunnerSpecValidate(t *testing.T) {
 				DisableUpdates:  true,
 				EnableBootDebug: true,
 				Tools: params.RunnerApplicationDownload{
-					OS:           hcloud.String("linux"),
-					Architecture: hcloud.String("amd64"),
-					DownloadURL:  hcloud.String("MockURL"),
-					Filename:     hcloud.String("garm-runner"),
+					OS:           hcloud.Ptr("linux"),
+					Architecture: hcloud.Ptr("amd64"),
+					DownloadURL:  hcloud.Ptr("MockURL"),
+					Filename:     hcloud.Ptr("garm-runner"),
 				},
 				ControllerID: "controller_id",
 				BootstrapParams: params.BootstrapInstance{
@@ -313,14 +313,14 @@ func TestMergeExtraSpecs(t *testing.T) {
 				Location: "location",
 			},
 			extra: &extraSpecs{
-				Location:        hcloud.String("nbg1"),
+				Location:        hcloud.Ptr("nbg1"),
 				SSHKeys:         []int64{123456},
-				Datacenter:      hcloud.String("nbg1-dc1"),
+				Datacenter:      hcloud.Ptr("nbg1-dc1"),
 				PlacementGroup:  hcloud.Ptr(int64(444444)),
 				Networks:        []int64{111111},
 				Firewalls:       []int64{222222, 333333},
-				DisableUpdates:  hcloud.Bool(true),
-				EnableBootDebug: hcloud.Bool(true),
+				DisableUpdates:  hcloud.Ptr(true),
+				EnableBootDebug: hcloud.Ptr(true),
 			},
 			expected: &RunnerSpec{
 				Location:        "nbg1",

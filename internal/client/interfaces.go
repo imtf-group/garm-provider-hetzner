@@ -28,7 +28,8 @@ func (r *HCloudAPI) GetServerByID(ctx context.Context, serverID int64) (*hcloud.
 }
 
 func (r *HCloudAPI) DeleteServer(ctx context.Context, server *hcloud.Server) (*hcloud.Response, error) {
-	return r.client.Server.Delete(ctx, server)
+	_, resp, err := r.client.Server.DeleteWithResult(ctx, server)
+	return resp, err
 }
 
 func (r *HCloudAPI) CreateServer(ctx context.Context, opts hcloud.ServerCreateOpts) (hcloud.ServerCreateResult, *hcloud.Response, error) {

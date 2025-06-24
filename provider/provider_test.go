@@ -35,10 +35,10 @@ func TestCreateInstance(t *testing.T) {
 	providerID := "123456"
 	spec.DefaultToolFetch = func(osType params.OSType, osArch params.OSArch, tools []params.RunnerApplicationDownload) (params.RunnerApplicationDownload, error) {
 		return params.RunnerApplicationDownload{
-			OS:           hcloud.String("linux"),
-			Architecture: hcloud.String("amd64"),
-			DownloadURL:  hcloud.String("MockURL"),
-			Filename:     hcloud.String("garm-runner"),
+			OS:           hcloud.Ptr("linux"),
+			Architecture: hcloud.Ptr("amd64"),
+			DownloadURL:  hcloud.Ptr("MockURL"),
+			Filename:     hcloud.Ptr("garm-runner"),
 		}, nil
 	}
 	bootstrapParams := params.BootstrapInstance{
@@ -47,10 +47,10 @@ func TestCreateInstance(t *testing.T) {
 		Image:  "ubuntu-22.04",
 		Tools: []params.RunnerApplicationDownload{
 			{
-				OS:           hcloud.String("linux"),
-				Architecture: hcloud.String("amd64"),
-				DownloadURL:  hcloud.String("MockURL"),
-				Filename:     hcloud.String("garm-runner"),
+				OS:           hcloud.Ptr("linux"),
+				Architecture: hcloud.Ptr("amd64"),
+				DownloadURL:  hcloud.Ptr("MockURL"),
+				Filename:     hcloud.Ptr("garm-runner"),
 			},
 		},
 		OSType:     params.Linux,
@@ -94,10 +94,10 @@ func TestCreateInstanceError(t *testing.T) {
 	providerID := "123456"
 	spec.DefaultToolFetch = func(osType params.OSType, osArch params.OSArch, tools []params.RunnerApplicationDownload) (params.RunnerApplicationDownload, error) {
 		return params.RunnerApplicationDownload{
-			OS:           hcloud.String("linux"),
-			Architecture: hcloud.String("amd64"),
-			DownloadURL:  hcloud.String("MockURL"),
-			Filename:     hcloud.String("garm-runner"),
+			OS:           hcloud.Ptr("linux"),
+			Architecture: hcloud.Ptr("amd64"),
+			DownloadURL:  hcloud.Ptr("MockURL"),
+			Filename:     hcloud.Ptr("garm-runner"),
 		}, nil
 	}
 	bootstrapParams := params.BootstrapInstance{
@@ -106,10 +106,10 @@ func TestCreateInstanceError(t *testing.T) {
 		Image:  "ubuntu-22.04",
 		Tools: []params.RunnerApplicationDownload{
 			{
-				OS:           hcloud.String("linux"),
-				Architecture: hcloud.String("amd64"),
-				DownloadURL:  hcloud.String("MockURL"),
-				Filename:     hcloud.String("garm-runner"),
+				OS:           hcloud.Ptr("linux"),
+				Architecture: hcloud.Ptr("amd64"),
+				DownloadURL:  hcloud.Ptr("MockURL"),
+				Filename:     hcloud.Ptr("garm-runner"),
 			},
 		},
 		OSType:     params.Linux,

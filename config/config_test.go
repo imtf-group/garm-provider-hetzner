@@ -46,9 +46,11 @@ func TestNewConfig(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tempFile, err := os.CreateTemp("", "test.toml")
 			assert.NoError(t, err, "Failed to create temp file")
-			defer os.Remove(tempFile.Name())
+			defer os.Remove(tempFile.Name()) //nolint:errcheck
 			_, err = tempFile.Write([]byte(tt.content))
+			assert.NoError(t, err, "Failed to write to temp file")
 			err = tempFile.Close()
+			assert.NoError(t, err, "Failed to close temp file")
 			config, err := NewConfig(tempFile.Name())
 			if tt.errString == "" {
 				assert.NoError(t, err)
