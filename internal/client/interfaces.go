@@ -8,7 +8,7 @@ import (
 
 type ClientInterface interface {
 	GetAllServers(ctx context.Context) ([]*hcloud.Server, error)
-	GetServerByID(ctx context.Context, serverID int64) (*hcloud.Server, *hcloud.Response, error)
+	GetServer(ctx context.Context, instance string) (*hcloud.Server, *hcloud.Response, error)
 	CreateServer(ctx context.Context, opts hcloud.ServerCreateOpts) (hcloud.ServerCreateResult, *hcloud.Response, error)
 	DeleteServer(ctx context.Context, server *hcloud.Server) (*hcloud.Response, error)
 	StartServer(ctx context.Context, server *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
@@ -23,8 +23,8 @@ func (r *HCloudAPI) GetAllServers(ctx context.Context) ([]*hcloud.Server, error)
 	return r.client.Server.All(ctx)
 }
 
-func (r *HCloudAPI) GetServerByID(ctx context.Context, serverID int64) (*hcloud.Server, *hcloud.Response, error) {
-	return r.client.Server.GetByID(ctx, serverID)
+func (r *HCloudAPI) GetServer(ctx context.Context, instance string) (*hcloud.Server, *hcloud.Response, error) {
+	return r.client.Server.Get(ctx, instance)
 }
 
 func (r *HCloudAPI) DeleteServer(ctx context.Context, server *hcloud.Server) (*hcloud.Response, error) {
@@ -53,8 +53,8 @@ func (m *MockHCloudAPI) GetAllServers(ctx context.Context) ([]*hcloud.Server, er
 	return args.Get(0).([]*hcloud.Server), args.Error(1)
 }
 
-func (m *MockHCloudAPI) GetServerByID(ctx context.Context, serverID int64) (*hcloud.Server, *hcloud.Response, error) {
-	args := m.Called(ctx, serverID)
+func (m *MockHCloudAPI) GetServer(ctx context.Context, instance string) (*hcloud.Server, *hcloud.Response, error) {
+	args := m.Called(ctx, instance)
 	return args.Get(0).(*hcloud.Server), args.Get(1).(*hcloud.Response), args.Error(2)
 }
 

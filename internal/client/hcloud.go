@@ -164,16 +164,12 @@ func (c *HcloudClient) DeleteInstance(ctx context.Context, instance string) erro
 }
 
 func (c *HcloudClient) GetInstance(ctx context.Context, instance string) (*hcloud.Server, error) {
-	serverID, err := strconv.ParseInt(instance, 10, 64)
-	if err != nil {
-		return nil, fmt.Errorf("parse error: %v", err)
-	}
-	server, _, err := c.api.GetServerByID(ctx, serverID)
+	server, _, err := c.api.GetServer(ctx, instance)
 	if err != nil {
 		return nil, fmt.Errorf("error while retrieving the serverID: %v", err)
 	}
 	if server == nil {
-		return nil, fmt.Errorf("server with ID %d not found", serverID)
+		return nil, fmt.Errorf("server with ID %q not found", instance)
 	}
 	return server, nil
 }

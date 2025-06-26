@@ -157,7 +157,7 @@ func TestDeleteInstance(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID: serverID,
 	}, &hcloud.Response{}, nil)
 	mockAPI.On("DeleteServer", ctx, &hcloud.Server{
@@ -185,7 +185,7 @@ func TestDeleteInstanceError(t *testing.T) {
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
 
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID: serverID,
 	}, &hcloud.Response{}, nil)
 	mockAPI.On("DeleteServer", ctx, &hcloud.Server{
@@ -228,9 +228,7 @@ func TestGetInstance(t *testing.T) {
 	}
 	provider.client.SetConfig(config)
 	provider.client.SetApi(mockAPI)
-	serverID, err := strconv.ParseInt(providerID, 10, 64)
-	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(server, &hcloud.Response{}, nil)
+	mockAPI.On("GetServer", ctx, providerID).Return(server, &hcloud.Response{}, nil)
 	instance, err := provider.GetInstance(ctx, providerID)
 	assert.NoError(t, err)
 	assert.Equal(t, instance, expectedInstance)
@@ -261,12 +259,10 @@ func TestGetInstanceError(t *testing.T) {
 	}
 	provider.client.SetConfig(config)
 	provider.client.SetApi(mockAPI)
-	serverID, err := strconv.ParseInt(providerID, 10, 64)
-	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(
+	mockAPI.On("GetServer", ctx, providerID).Return(
 		server, &hcloud.Response{},
 		fmt.Errorf("Error retrieving instance"))
-	_, err = provider.GetInstance(ctx, providerID)
+	_, err := provider.GetInstance(ctx, providerID)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Error retrieving instance")
 	mockAPI.AssertExpectations(t)
@@ -408,7 +404,7 @@ func TestStop(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID:     serverID,
 		Status: hcloud.ServerStatusRunning,
 	}, &hcloud.Response{}, nil)
@@ -437,7 +433,7 @@ func TestStopError(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID:     serverID,
 		Status: hcloud.ServerStatusRunning,
 	}, &hcloud.Response{}, nil)
@@ -467,7 +463,7 @@ func TestStopStopped(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID:     serverID,
 		Status: hcloud.ServerStatusOff,
 	}, &hcloud.Response{}, nil)
@@ -493,7 +489,7 @@ func TestStart(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID:     serverID,
 		Status: hcloud.ServerStatusOff,
 	}, &hcloud.Response{}, nil)
@@ -522,7 +518,7 @@ func TestStartError(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID:     serverID,
 		Status: hcloud.ServerStatusOff,
 	}, &hcloud.Response{}, nil)
@@ -552,7 +548,7 @@ func TestStartRunning(t *testing.T) {
 	provider.client.SetApi(mockAPI)
 	serverID, err := strconv.ParseInt(providerID, 10, 64)
 	assert.NoError(t, err)
-	mockAPI.On("GetServerByID", ctx, serverID).Return(&hcloud.Server{
+	mockAPI.On("GetServer", ctx, providerID).Return(&hcloud.Server{
 		ID:     serverID,
 		Status: hcloud.ServerStatusRunning,
 	}, &hcloud.Response{}, nil)

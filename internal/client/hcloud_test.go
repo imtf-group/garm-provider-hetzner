@@ -129,7 +129,7 @@ func TestDeleteInstance(t *testing.T) {
 
 	client := &HcloudClient{api: mockAPI}
 
-	mockAPI.On("GetServerByID", mock.Anything, mock.MatchedBy(func(serverID int64) bool {
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
 		return true
 	})).Return(&hcloud.Server{ID: 123456}, &hcloud.Response{}, nil)
 
@@ -143,20 +143,12 @@ func TestDeleteInstance(t *testing.T) {
 	mockAPI.AssertExpectations(t)
 }
 
-func TestDeleteInstanceInvalidValue(t *testing.T) {
-	client := &HcloudClient{}
-	err := client.DeleteInstance(context.Background(), "not-a-number")
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "invalid syntax")
-}
-
 func TestGetInstance(t *testing.T) {
 	mockAPI := new(MockHCloudAPI)
 
 	client := &HcloudClient{api: mockAPI}
 
-	mockAPI.On("GetServerByID", mock.Anything, mock.MatchedBy(func(serverID int64) bool {
-		assert.Equal(t, serverID, int64(123456))
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
 		return true
 	})).Return(&hcloud.Server{ID: 123456, Name: "my-server"}, &hcloud.Response{}, nil)
 
@@ -164,14 +156,6 @@ func TestGetInstance(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, server.ID, int64(123456))
 	mockAPI.AssertExpectations(t)
-}
-
-func TestGetInstanceInvalidValue(t *testing.T) {
-	client := &HcloudClient{}
-	server, err := client.GetInstance(context.Background(), "not-a-number")
-	assert.Error(t, err)
-	assert.Nil(t, server)
-	assert.Contains(t, err.Error(), "invalid syntax")
 }
 
 func TestGetAllInstances(t *testing.T) {
@@ -198,7 +182,7 @@ func TestStartInstance(t *testing.T) {
 
 	client := &HcloudClient{api: mockAPI}
 
-	mockAPI.On("GetServerByID", mock.Anything, mock.MatchedBy(func(serverID int64) bool {
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
 		return true
 	})).Return(&hcloud.Server{ID: 123456, Status: hcloud.ServerStatusOff}, &hcloud.Response{}, nil)
 
@@ -217,7 +201,7 @@ func TestStartInstanceAlreadyStarted(t *testing.T) {
 
 	client := &HcloudClient{api: mockAPI}
 
-	mockAPI.On("GetServerByID", mock.Anything, mock.MatchedBy(func(serverID int64) bool {
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
 		return true
 	})).Return(&hcloud.Server{ID: 123456, Status: hcloud.ServerStatusRunning}, &hcloud.Response{}, nil)
 
@@ -227,19 +211,12 @@ func TestStartInstanceAlreadyStarted(t *testing.T) {
 	mockAPI.AssertExpectations(t)
 }
 
-func TestStartInstanceInvalidValue(t *testing.T) {
-	client := &HcloudClient{}
-	err := client.StartInstance(context.Background(), "not-a-number")
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "invalid syntax")
-}
-
 func TestStopInstance(t *testing.T) {
 	mockAPI := new(MockHCloudAPI)
 
 	client := &HcloudClient{api: mockAPI}
 
-	mockAPI.On("GetServerByID", mock.Anything, mock.MatchedBy(func(serverID int64) bool {
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
 		return true
 	})).Return(&hcloud.Server{ID: 123456, Status: hcloud.ServerStatusRunning}, &hcloud.Response{}, nil)
 
@@ -258,7 +235,7 @@ func TestStopInstanceAlreadyStopped(t *testing.T) {
 
 	client := &HcloudClient{api: mockAPI}
 
-	mockAPI.On("GetServerByID", mock.Anything, mock.MatchedBy(func(serverID int64) bool {
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
 		return true
 	})).Return(&hcloud.Server{ID: 123456, Status: hcloud.ServerStatusOff}, &hcloud.Response{}, nil)
 
@@ -267,378 +244,3 @@ func TestStopInstanceAlreadyStopped(t *testing.T) {
 	assert.Contains(t, err.Error(), "cannot be stopped in off state")
 	mockAPI.AssertExpectations(t)
 }
-
-func TestStopInstanceInvalidValue(t *testing.T) {
-	client := &HcloudClient{}
-	err := client.StopInstance(context.Background(), "not-a-number")
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "invalid syntax")
-}
-
-// 	ctx := context.Background()
-// 	id, err := client.CreateInstance(ctx, spec)
-// 	require.NoError(t, err)
-// 	require.Equal(t, "123456", id)
-// }
-
-// func TestStartInstance(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	instanceId := "i-1234567890abcdef0"
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	mockClient.On("StartInstances", ctx, mock.MatchedBy(func(input *ec2.StartInstancesInput) bool {
-// 		return len(input.InstanceIds) == 1 && input.InstanceIds[0] == instanceId
-// 	}), mock.Anything).Return(&ec2.StartInstancesOutput{}, nil)
-
-// 	err := awsCli.StartInstance(ctx, instanceId)
-// 	require.NoError(t, err)
-
-// 	mockClient.AssertExpectations(t)
-// }
-
-// func TestStopInstance(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	instanceId := "i-1234567890abcdef0"
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	mockClient.On("StopInstances", ctx, mock.MatchedBy(func(input *ec2.StopInstancesInput) bool {
-// 		return len(input.InstanceIds) == 1 && input.InstanceIds[0] == instanceId
-// 	}), mock.Anything).Return(&ec2.StopInstancesOutput{}, nil)
-
-// 	err := awsCli.StopInstance(ctx, instanceId)
-// 	require.NoError(t, err)
-
-// 	mockClient.AssertExpectations(t)
-// }
-
-// func TestFindInstances(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	instanceName := "instance-name"
-// 	controllerID := "controllerID"
-// 	tags := []types.Tag{
-// 		{
-// 			Key:   aws.String("tag:GARM_CONTROLLER_ID"),
-// 			Value: &controllerID,
-// 		},
-// 		{
-// 			Key:   aws.String("tag:Name"),
-// 			Value: &instanceName,
-// 		},
-// 	}
-// 	mockClient.On("DescribeInstances", ctx, mock.MatchedBy(func(input *ec2.DescribeInstancesInput) bool {
-// 		return len(input.Filters) == 3
-// 	}), mock.Anything).Return(&ec2.DescribeInstancesOutput{
-// 		Reservations: []types.Reservation{
-// 			{
-// 				Instances: []types.Instance{
-// 					{
-// 						InstanceId: aws.String("i-1234567890abcdef0"),
-// 						Tags:       tags,
-// 					},
-// 					{
-// 						InstanceId: aws.String("i-1234567890abcdef1"),
-// 						Tags:       tags,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}, nil)
-
-// 	instances, err := awsCli.FindInstances(ctx, controllerID, instanceName)
-// 	require.NoError(t, err)
-// 	require.Len(t, instances, 2)
-// 	require.Equal(t, tags, instances[0].Tags)
-// 	require.Equal(t, tags, instances[1].Tags)
-
-// 	mockClient.AssertExpectations(t)
-// }
-
-// func TestFindOneInstanceWithName(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	instanceName := "instance-name"
-// 	controllerID := "controllerID"
-// 	tags := []types.Tag{
-// 		{
-// 			Key:   aws.String("tag:GARM_CONTROLLER_ID"),
-// 			Value: &controllerID,
-// 		},
-// 		{
-// 			Key:   aws.String("tag:Name"),
-// 			Value: &instanceName,
-// 		},
-// 	}
-// 	mockClient.On("DescribeInstances", ctx, mock.MatchedBy(func(input *ec2.DescribeInstancesInput) bool {
-// 		return len(input.Filters) == 3
-// 	}), mock.Anything).Return(&ec2.DescribeInstancesOutput{
-// 		Reservations: []types.Reservation{
-// 			{
-// 				Instances: []types.Instance{
-// 					{
-// 						InstanceId: aws.String("i-1234567890abcdef0"),
-// 						Tags:       tags,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}, nil)
-
-// 	instance, err := awsCli.FindOneInstance(ctx, controllerID, instanceName)
-// 	require.NoError(t, err)
-// 	require.Equal(t, tags, instance.Tags)
-
-// 	mockClient.AssertExpectations(t)
-// }
-
-// func TestFindOneInstanceWithID(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	instanceId := "i-1234567890abcdef0"
-// 	controllerID := "controllerID"
-// 	mockClient.On("DescribeInstances", ctx, mock.MatchedBy(func(input *ec2.DescribeInstancesInput) bool {
-// 		return len(input.InstanceIds) == 1 && input.InstanceIds[0] == instanceId
-// 	}), mock.Anything).Return(&ec2.DescribeInstancesOutput{
-// 		Reservations: []types.Reservation{
-// 			{
-// 				Instances: []types.Instance{
-// 					{
-// 						InstanceId: &instanceId,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}, nil)
-
-// 	instance, err := awsCli.FindOneInstance(ctx, controllerID, instanceId)
-// 	require.NoError(t, err)
-// 	require.Equal(t, instanceId, *instance.InstanceId)
-
-// 	mockClient.AssertExpectations(t)
-// }
-
-// func TestGetInstance(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	instanceID := "i-1234567890abcdef0"
-// 	mockClient.On("DescribeInstances", ctx, mock.MatchedBy(func(input *ec2.DescribeInstancesInput) bool {
-// 		return len(input.InstanceIds) == 1 && input.InstanceIds[0] == instanceID
-// 	}), mock.Anything).Return(&ec2.DescribeInstancesOutput{
-// 		Reservations: []types.Reservation{
-// 			{
-// 				Instances: []types.Instance{
-// 					{
-// 						InstanceId: aws.String(instanceID),
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}, nil)
-
-// 	instance, err := awsCli.GetInstance(ctx, instanceID)
-// 	require.NoError(t, err)
-// 	require.Equal(t, instanceID, *instance.InstanceId)
-// }
-
-// func TestTerminateInstance(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	poolID := "poolID"
-// 	tags := []types.Tag{
-// 		{
-// 			Key:   aws.String("tag:GARM_POOL_ID"),
-// 			Value: &poolID,
-// 		},
-// 	}
-// 	mockClient.On("DescribeInstances", ctx, mock.MatchedBy(func(input *ec2.DescribeInstancesInput) bool {
-// 		return len(input.Filters) == 2 && input.Filters[0].Name == aws.String("tag:GARM_POOL_ID")
-// 	}), mock.Anything).Return(&ec2.DescribeInstancesOutput{
-// 		Reservations: []types.Reservation{
-// 			{
-// 				Instances: []types.Instance{
-// 					{
-// 						Tags: tags,
-// 					},
-// 				},
-// 			},
-// 		},
-// 	}, nil)
-
-// 	mockClient.On("TerminateInstances", ctx, mock.MatchedBy(func(input *ec2.TerminateInstancesInput) bool {
-// 		return len(input.InstanceIds) == 1
-// 	}), mock.Anything).Return(&ec2.TerminateInstancesOutput{}, nil)
-
-// 	err := awsCli.TerminateInstance(ctx, poolID)
-// 	require.NoError(t, err)
-// }
-
-// func TestCreateRunningInstance(t *testing.T) {
-// 	ctx := context.Background()
-// 	cfg := &config.Config{
-// 		Region:   "us-west-2",
-// 		SubnetID: "subnet-1234567890abcdef0",
-// 		Credentials: config.Credentials{
-// 			CredentialType: config.AWSCredentialTypeStatic,
-// 			StaticCredentials: config.StaticCredentials{
-// 				AccessKeyID:     "AccessKeyID",
-// 				SecretAccessKey: "SecretAccessKey",
-// 				SessionToken:    "SessionToken",
-// 			},
-// 		},
-// 	}
-// 	mockClient := new(MockComputeClient)
-// 	awsCli := &AwsCli{
-// 		cfg:    cfg,
-// 		client: mockClient,
-// 	}
-// 	instanceID := "i-1234567890abcdef0"
-// 	spec.DefaultToolFetch = func(osType params.OSType, osArch params.OSArch, tools []params.RunnerApplicationDownload) (params.RunnerApplicationDownload, error) {
-// 		return params.RunnerApplicationDownload{
-// 			OS:           aws.String("linux"),
-// 			Architecture: aws.String("amd64"),
-// 			DownloadURL:  aws.String("MockURL"),
-// 			Filename:     aws.String("garm-runner"),
-// 		}, nil
-// 	}
-// 	spec := &spec.RunnerSpec{
-// 		Region: "us-west-2",
-// 		Tools: params.RunnerApplicationDownload{
-// 			OS:           aws.String("linux"),
-// 			Architecture: aws.String("amd64"),
-// 			DownloadURL:  aws.String("MockURL"),
-// 			Filename:     aws.String("garm-runner"),
-// 		},
-// 		BootstrapParams: params.BootstrapInstance{
-// 			Name:   "instance-name",
-// 			OSType: "linux",
-// 			Image:  "ami-12345678",
-// 			Flavor: "t2.micro",
-// 			PoolID: "poolID",
-// 		},
-// 		SubnetID:     "subnet-1234567890abcdef0",
-// 		SSHKeyName:   aws.String("SSHKeyName"),
-// 		ControllerID: "controllerID",
-// 	}
-// 	mockClient.On("RunInstances", ctx, mock.Anything, mock.Anything).Return(&ec2.RunInstancesOutput{
-// 		Instances: []types.Instance{
-// 			{
-// 				InstanceId: aws.String(instanceID),
-// 				KeyName:    aws.String("SSHKeyName"),
-// 			},
-// 		},
-// 	}, nil)
-
-// 	instance, err := awsCli.CreateRunningInstance(ctx, spec)
-// 	require.NoError(t, err)
-// 	require.Equal(t, instanceID, instance)
-// }
