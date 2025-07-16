@@ -25,3 +25,6 @@ jobs:
 
       - name: Run tests
         run: make test
+
+      - name: Build
+        run: make build-static
