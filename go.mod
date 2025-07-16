@@ -4,7 +4,7 @@ go 1.23.5
 
 require (
 	github.com/BurntSushi/toml v1.5.0
-	github.com/cloudbase/garm-provider-common v0.1.4
+	github.com/cloudbase/garm-provider-common v0.1.5
 	github.com/hetznercloud/hcloud-go/v2 v2.22.0
 	github.com/invopop/jsonschema v0.13.0
 	github.com/stretchr/testify v1.10.0
@@ -22,7 +22,7 @@ require (
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/minio/sio v0.4.0 // indirect
+	github.com/minio/sio v0.4.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
