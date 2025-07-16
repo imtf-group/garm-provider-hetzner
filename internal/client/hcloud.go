@@ -152,23 +152,25 @@ func (c *HcloudClient) CreateInstance(ctx context.Context, spec *spec.RunnerSpec
 }
 
 func (c *HcloudClient) DeleteInstance(ctx context.Context, instance string) error {
-	server, err := c.GetInstance(ctx, instance)
+	server, err := c.GetInstance(ctx, instance, true)
 	if err != nil {
 		return err
 	}
-	_, err = c.api.DeleteServer(ctx, server)
-	if err != nil {
-		return fmt.Errorf("error during deletion: %v (ID: %d)", err, server.ID)
+	if server != nil {
+		_, err = c.api.DeleteServer(ctx, server)
+		if err != nil {
+			return fmt.Errorf("error during deletion: %v (ID: %d)", err, server.ID)
+		}
 	}
 	return nil
 }
 
-func (c *HcloudClient) GetInstance(ctx context.Context, instance string) (*hcloud.Server, error) {
+func (c *HcloudClient) GetInstance(ctx context.Context, instance string, ignoreNotFound bool) (*hcloud.Server, error) {
 	server, _, err := c.api.GetServer(ctx, instance)
 	if err != nil {
 		return nil, fmt.Errorf("error while retrieving the serverID: %v", err)
 	}
-	if server == nil {
+	if server == nil && !ignoreNotFound {
 		return nil, fmt.Errorf("server with ID %q not found", instance)
 	}
 	return server, nil
@@ -183,7 +185,7 @@ func (c *HcloudClient) GetAllInstances(ctx context.Context) ([]*hcloud.Server, e
 }
 
 func (c *HcloudClient) StartInstance(ctx context.Context, instance string) error {
-	server, err := c.GetInstance(ctx, instance)
+	server, err := c.GetInstance(ctx, instance, false)
 	if err != nil {
 		return err
 	}
@@ -198,7 +200,7 @@ func (c *HcloudClient) StartInstance(ctx context.Context, instance string) error
 }
 
 func (c *HcloudClient) StopInstance(ctx context.Context, instance string) error {
-	server, err := c.GetInstance(ctx, instance)
+	server, err := c.GetInstance(ctx, instance, false)
 	if err != nil {
 		return err
 	}

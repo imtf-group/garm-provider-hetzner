@@ -63,7 +63,7 @@ func (a *HcloudProvider) DeleteInstance(ctx context.Context, instance string) er
 }
 
 func (a *HcloudProvider) GetInstance(ctx context.Context, instance string) (params.ProviderInstance, error) {
-	server, err := a.client.GetInstance(ctx, instance)
+	server, err := a.client.GetInstance(ctx, instance, false)
 	if err != nil {
 		return params.ProviderInstance{}, fmt.Errorf("failed to get VM details: %w", err)
 	}

@@ -55,7 +55,11 @@ func (m *MockHCloudAPI) GetAllServers(ctx context.Context) ([]*hcloud.Server, er
 
 func (m *MockHCloudAPI) GetServer(ctx context.Context, instance string) (*hcloud.Server, *hcloud.Response, error) {
 	args := m.Called(ctx, instance)
-	return args.Get(0).(*hcloud.Server), args.Get(1).(*hcloud.Response), args.Error(2)
+	var srv *hcloud.Server
+	if tmp := args.Get(0); tmp != nil {
+		srv = tmp.(*hcloud.Server)
+	}
+	return srv, args.Get(1).(*hcloud.Response), args.Error(2)
 }
 
 func (m *MockHCloudAPI) CreateServer(ctx context.Context, opts hcloud.ServerCreateOpts) (hcloud.ServerCreateResult, *hcloud.Response, error) {

@@ -143,6 +143,20 @@ func TestDeleteInstance(t *testing.T) {
 	mockAPI.AssertExpectations(t)
 }
 
+func TestDeleteInstanceNotFound(t *testing.T) {
+	mockAPI := new(MockHCloudAPI)
+
+	client := &HcloudClient{api: mockAPI}
+
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
+		return true
+	})).Return(nil, &hcloud.Response{}, nil)
+
+	err := client.DeleteInstance(context.Background(), "123456")
+	assert.NoError(t, err)
+	mockAPI.AssertExpectations(t)
+}
+
 func TestGetInstance(t *testing.T) {
 	mockAPI := new(MockHCloudAPI)
 
@@ -152,9 +166,40 @@ func TestGetInstance(t *testing.T) {
 		return true
 	})).Return(&hcloud.Server{ID: 123456, Name: "my-server"}, &hcloud.Response{}, nil)
 
-	server, err := client.GetInstance(context.Background(), "123456")
+	server, err := client.GetInstance(context.Background(), "123456", false)
 	assert.NoError(t, err)
 	assert.Equal(t, server.ID, int64(123456))
+	mockAPI.AssertExpectations(t)
+}
+
+func TestGetInstanceNotFound(t *testing.T) {
+	mockAPI := new(MockHCloudAPI)
+
+	client := &HcloudClient{api: mockAPI}
+
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
+		return true
+	})).Return(nil, &hcloud.Response{}, nil)
+
+	server, err := client.GetInstance(context.Background(), "123456", false)
+	assert.Error(t, err)
+	assert.Nil(t, server)
+	assert.Equal(t, err.Error(), "server with ID \"123456\" not found")
+	mockAPI.AssertExpectations(t)
+}
+
+func TestGetInstanceIgnoreNotFound(t *testing.T) {
+	mockAPI := new(MockHCloudAPI)
+
+	client := &HcloudClient{api: mockAPI}
+
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
+		return true
+	})).Return(nil, &hcloud.Response{}, nil)
+
+	server, err := client.GetInstance(context.Background(), "123456", true)
+	assert.NoError(t, err)
+	assert.Nil(t, server)
 	mockAPI.AssertExpectations(t)
 }
 
@@ -193,6 +238,21 @@ func TestStartInstance(t *testing.T) {
 
 	err := client.StartInstance(context.Background(), "123456")
 	assert.NoError(t, err)
+	mockAPI.AssertExpectations(t)
+}
+
+func TestStartInstanceNotFound(t *testing.T) {
+	mockAPI := new(MockHCloudAPI)
+
+	client := &HcloudClient{api: mockAPI}
+
+	mockAPI.On("GetServer", mock.Anything, mock.MatchedBy(func(instance string) bool {
+		return true
+	})).Return(nil, &hcloud.Response{}, nil)
+
+	err := client.StartInstance(context.Background(), "123456")
+	assert.Error(t, err)
+	assert.Equal(t, err.Error(), "server with ID \"123456\" not found")
 	mockAPI.AssertExpectations(t)
 }
 
