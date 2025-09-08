@@ -7,7 +7,7 @@ require (
 	github.com/cloudbase/garm-provider-common v0.1.5
 	github.com/hetznercloud/hcloud-go/v2 v2.22.0
 	github.com/invopop/jsonschema v0.13.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	github.com/xeipuuv/gojsonschema v1.2.0
 )
 
