@@ -3,7 +3,7 @@ module github.com/imtf-group/garm-provider-hetzner
 go 1.23.5
 
 require (
-	github.com/BurntSushi/toml v1.5.0
+	github.com/BurntSushi/toml v1.6.0
 	github.com/cloudbase/garm-provider-common v0.1.5
 	github.com/hetznercloud/hcloud-go/v2 v2.22.0
 	github.com/invopop/jsonschema v0.13.0
