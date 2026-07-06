@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/cloudbase/garm-provider-common v0.1.7
-	github.com/hetznercloud/hcloud-go/v2 v2.33.0
+	github.com/hetznercloud/hcloud-go/v2 v2.44.0
 	github.com/invopop/jsonschema v0.13.0
 	github.com/stretchr/testify v1.11.1
 	github.com/xeipuuv/gojsonschema v1.2.0
@@ -36,7 +36,7 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
-	golang.org/x/crypto v0.51.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
