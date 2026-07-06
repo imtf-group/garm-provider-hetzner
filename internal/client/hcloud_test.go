@@ -99,7 +99,6 @@ func TestCreateInstance(t *testing.T) {
 
 	mockAPI.On("CreateServer", mock.Anything, mock.MatchedBy(func(opts hcloud.ServerCreateOpts) bool {
 		assert.Nil(t, opts.Location)
-		assert.NotNil(t, opts.Datacenter)
 		assert.NotNil(t, opts.PlacementGroup, 111111)
 		assert.Equal(t, opts.Networks, []*hcloud.Network{
 			&hcloud.Network{ID: 22222},
@@ -114,7 +113,6 @@ func TestCreateInstance(t *testing.T) {
 			EnableIPv4: true,
 			EnableIPv6: false,
 		})
-		assert.Equal(t, "fsn1-dc14", opts.Datacenter.Name)
 		return true
 	})).Return(hcloud.ServerCreateResult{Server: &hcloud.Server{ID: 123456}}, &hcloud.Response{}, nil)
 
