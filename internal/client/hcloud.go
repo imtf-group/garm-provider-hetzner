@@ -95,7 +95,6 @@ func (c *HcloudClient) CreateInstance(ctx context.Context, spec *spec.RunnerSpec
 	var sshKeys []*hcloud.SSHKey
 	var networks []*hcloud.Network
 	var firewalls []*hcloud.ServerCreateFirewall
-	var datacenter *hcloud.Datacenter
 	var placementGroup *hcloud.PlacementGroup
 
 	for _, sshKey := range spec.SSHKeys {
@@ -110,10 +109,6 @@ func (c *HcloudClient) CreateInstance(ctx context.Context, spec *spec.RunnerSpec
 		firewalls = append(firewalls, &hcloud.ServerCreateFirewall{
 			Firewall: hcloud.Firewall{ID: firewall},
 		})
-	}
-	if spec.Datacenter != "" {
-		datacenter = &hcloud.Datacenter{Name: spec.Datacenter}
-		location = nil
 	}
 
 	if spec.PlacementGroup != 0 {
@@ -135,7 +130,6 @@ func (c *HcloudClient) CreateInstance(ctx context.Context, spec *spec.RunnerSpec
 		},
 		Firewalls:      firewalls,
 		PlacementGroup: placementGroup,
-		Datacenter:     datacenter,
 		Labels: map[string]string{
 			"Name":               spec.BootstrapParams.Name,
 			"GARM_POOL_ID":       spec.BootstrapParams.PoolID,

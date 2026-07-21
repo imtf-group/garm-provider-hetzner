@@ -59,7 +59,6 @@ func newExtraSpecsFromBootstrapData(data params.BootstrapInstance) (*extraSpecs,
 type extraSpecs struct {
 	Location        *string  `json:"location,omitempty" jsonschema:"description=Location where to create the server."`
 	SSHKeys         []int64  `json:"ssh_keys,omitempty" jsonschema:"description=ID of SSH keys to use for the instance."`
-	Datacenter      *string  `json:"datacenter,omitempty" jsonschema:"description=Datacenter where to create the server."`
 	PlacementGroup  *int64   `json:"placement_group,omitempty" jsonschema:"description=ID of the placement Group where the Server should be in."`
 	Networks        []int64  `json:"networks,omitempty" jsonschema:"description=Network IDs which should be attached to the Server private network interface."`
 	Firewalls       []int64  `json:"firewalls,omitempty" jsonschema:"description=Firewall IDs which should be applied on the Server's public network interface."`
@@ -103,7 +102,6 @@ type RunnerSpec struct {
 	Location        string
 	DisableUpdates  bool
 	ExtraPackages   []string
-	Datacenter      string
 	EnableBootDebug bool
 	Tools           params.RunnerApplicationDownload
 	BootstrapParams params.BootstrapInstance
@@ -136,10 +134,6 @@ func (r *RunnerSpec) MergeExtraSpecs(extraSpecs *extraSpecs) {
 
 	if extraSpecs.Location != nil {
 		r.Location = *extraSpecs.Location
-	}
-
-	if extraSpecs.Datacenter != nil {
-		r.Datacenter = *extraSpecs.Datacenter
 	}
 
 	if extraSpecs.PlacementGroup != nil {

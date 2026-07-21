@@ -80,8 +80,7 @@ func TestCreateInstance(t *testing.T) {
 	client := &HcloudClient{api: mockAPI}
 
 	spec := &spec.RunnerSpec{
-		Datacenter: "fsn1-dc14",
-		Location:   "fsn1",
+		Location: "fsn1",
 		BootstrapParams: params.BootstrapInstance{
 			Name:   "test-runner",
 			PoolID: "pool-1",
@@ -98,7 +97,7 @@ func TestCreateInstance(t *testing.T) {
 	}
 
 	mockAPI.On("CreateServer", mock.Anything, mock.MatchedBy(func(opts hcloud.ServerCreateOpts) bool {
-		assert.Nil(t, opts.Location)
+		assert.NotNil(t, opts.Location, "fsn1")
 		assert.NotNil(t, opts.PlacementGroup, 111111)
 		assert.Equal(t, opts.Networks, []*hcloud.Network{
 			&hcloud.Network{ID: 22222},
