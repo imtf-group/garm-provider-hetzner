@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/BurntSushi/toml v1.6.0
-	github.com/cloudbase/garm-provider-common v0.1.7
+	github.com/cloudbase/garm-provider-common v0.1.9
 	github.com/hetznercloud/hcloud-go/v2 v2.33.0
 	github.com/invopop/jsonschema v0.13.0
 	github.com/stretchr/testify v1.11.1
@@ -22,7 +22,7 @@ require (
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/minio/sio v0.4.1 // indirect
+	github.com/minio/sio v0.4.3 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -36,7 +36,7 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
-	golang.org/x/crypto v0.51.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
