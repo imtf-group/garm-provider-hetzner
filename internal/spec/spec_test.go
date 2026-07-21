@@ -21,12 +21,11 @@ func TestExtraSpecsFromBootstrapData(t *testing.T) {
 		{
 			name: "test complete extraSpecs",
 			input: params.BootstrapInstance{
-				ExtraSpecs: json.RawMessage(`{"placement_group": 444444, "firewalls": [222222, 333333], "networks": [111111], "location": "nbg1", "ssh_keys": [123456], "disable_updates": true, "enable_boot_debug": true, "extra_packages": ["package1", "package2"], "runner_install_template": "IyEvYmluL2Jhc2gKZWNobyBJbnN0YWxsaW5nIHJ1bm5lci4uLg==", "pre_install_scripts": {"setup.sh": "IyEvYmluL2Jhc2gKZWNobyBTZXR1cCBzY3JpcHQuLi4="}, "datacenter": "nbg1-dc1"}`),
+				ExtraSpecs: json.RawMessage(`{"placement_group": 444444, "firewalls": [222222, 333333], "networks": [111111], "location": "nbg1", "ssh_keys": [123456], "disable_updates": true, "enable_boot_debug": true, "extra_packages": ["package1", "package2"], "runner_install_template": "IyEvYmluL2Jhc2gKZWNobyBJbnN0YWxsaW5nIHJ1bm5lci4uLg==", "pre_install_scripts": {"setup.sh": "IyEvYmluL2Jhc2gKZWNobyBTZXR1cCBzY3JpcHQuLi4="}}`),
 			},
 			expectedOutput: &extraSpecs{
 				Location:        hcloud.Ptr("nbg1"),
 				SSHKeys:         []int64{123456},
-				Datacenter:      hcloud.Ptr("nbg1-dc1"),
 				PlacementGroup:  hcloud.Ptr(int64(444444)),
 				Networks:        []int64{111111},
 				Firewalls:       []int64{222222, 333333},
@@ -81,14 +80,6 @@ func TestExtraSpecsFromBootstrapData(t *testing.T) {
 			},
 			expectedOutput: nil,
 			errString:      "firewalls: Invalid type. Expected: array, given: string",
-		},
-		{
-			name: "test invalid datacenter",
-			input: params.BootstrapInstance{
-				ExtraSpecs: json.RawMessage(`{"datacenter": true}`),
-			},
-			expectedOutput: nil,
-			errString:      "datacenter: Invalid type. Expected: string, given: boolean",
 		},
 		{
 			name: "test invalid placement_group",
@@ -192,7 +183,7 @@ func TestGetRunnerSpecFromBootstrapParams(t *testing.T) {
 	data := params.BootstrapInstance{
 		Name:       "mock-name",
 		Image:      "ubuntu-24.04",
-		ExtraSpecs: json.RawMessage(`{"disable_ipv6": true, "disable_ipv4": false, "placement_group": 444444, "firewalls": [222222, 333333], "networks": [111111], "location": "nbg1", "ssh_keys": [123456], "disable_updates": true, "enable_boot_debug": true, "extra_packages": ["package1", "package2"], "runner_install_template": "IyEvYmluL2Jhc2gKZWNobyBJbnN0YWxsaW5nIHJ1bm5lci4uLg==", "pre_install_scripts": {"setup.sh": "IyEvYmluL2Jhc2gKZWNobyBTZXR1cCBzY3JpcHQuLi4="}, "datacenter": "nbg1-dc1"}`),
+		ExtraSpecs: json.RawMessage(`{"disable_ipv6": true, "disable_ipv4": false, "placement_group": 444444, "firewalls": [222222, 333333], "networks": [111111], "location": "nbg1", "ssh_keys": [123456], "disable_updates": true, "enable_boot_debug": true, "extra_packages": ["package1", "package2"], "runner_install_template": "IyEvYmluL2Jhc2gKZWNobyBJbnN0YWxsaW5nIHJ1bm5lci4uLg==", "pre_install_scripts": {"setup.sh": "IyEvYmluL2Jhc2gKZWNobyBTZXR1cCBzY3JpcHQuLi4="}}`),
 	}
 
 	config := &config.Config{
@@ -203,7 +194,6 @@ func TestGetRunnerSpecFromBootstrapParams(t *testing.T) {
 		Location:        "nbg1",
 		ExtraPackages:   []string{"package1", "package2"},
 		SSHKeys:         []int64{123456},
-		Datacenter:      "nbg1-dc1",
 		PlacementGroup:  444444,
 		Networks:        []int64{111111},
 		Firewalls:       []int64{222222, 333333},
@@ -258,7 +248,6 @@ func TestRunnerSpecValidate(t *testing.T) {
 				Location:        "nbg1",
 				ExtraPackages:   []string{"package1", "package2"},
 				SSHKeys:         []int64{123456},
-				Datacenter:      "nbg1-dc1",
 				PlacementGroup:  444444,
 				Networks:        []int64{111111},
 				Firewalls:       []int64{222222, 333333},
@@ -315,7 +304,6 @@ func TestMergeExtraSpecs(t *testing.T) {
 			extra: &extraSpecs{
 				Location:        hcloud.Ptr("nbg1"),
 				SSHKeys:         []int64{123456},
-				Datacenter:      hcloud.Ptr("nbg1-dc1"),
 				PlacementGroup:  hcloud.Ptr(int64(444444)),
 				Networks:        []int64{111111},
 				Firewalls:       []int64{222222, 333333},
@@ -325,7 +313,6 @@ func TestMergeExtraSpecs(t *testing.T) {
 			expected: &RunnerSpec{
 				Location:        "nbg1",
 				SSHKeys:         []int64{123456},
-				Datacenter:      "nbg1-dc1",
 				PlacementGroup:  444444,
 				Networks:        []int64{111111},
 				Firewalls:       []int64{222222, 333333},
